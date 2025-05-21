@@ -51,7 +51,7 @@ jobs:
             - '.env'
 
   prechecks:
-    if: ${{ needs.changes.outputs.packages || needs.changes.outputs.spack_core }}
+    # if: ${{ needs.changes.outputs.packages == 'true' || needs.changes.outputs.spack_core == 'true' }}
     uses: ./.github/workflows/prechecks.yml
     secrets: inherit
     with:
