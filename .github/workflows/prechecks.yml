@@ -28,12 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+    - uses: ./.github/actions/configure-spack
       with:
         fetch-depth: 2
-    - uses: ./.github/actions/configure-spack
     - name: Verify Added Checksums
       run: |
         . spack-core/share/spack/setup-env.sh
-        spack config add -f .ci/repos.yaml
-        spack repo add spack_repo/builtin
         spack ci verify-versions HEAD^1 HEAD

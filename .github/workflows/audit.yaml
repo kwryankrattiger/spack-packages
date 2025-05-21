@@ -34,12 +34,16 @@ jobs:
       run: |
         python -m pip install --upgrade pywin32
     - uses: ./.github/actions/configure-spack
+      with:
+        shell: ${{ matrix.shell }}
     - name: Package audits
       if: ${{ runner.os != 'Windows' }}
       run: |
+          . ./spack-core/share/spack/setup-env.sh
           spack -d audit packages
     - name: Package audits
       if: ${{ runner.os == 'Windows' }}
       run: |
+          ./spack-core/share/spack/setup-env.ps1
           spack -d audit packages
           ./.ci/validate_last_exit.ps1
