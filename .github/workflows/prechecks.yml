@@ -1,0 +1,39 @@
+name: prechecks
+
+on:
+  workflow_call:
+    inputs:
+      with_packages:
+        required: true
+        type: string
+
+concurrency:
+  group: prechecks-${{github.ref}}-${{github.event.pull_request.number || github.run_number}}
+  cancel-in-progress: true
+
+
+jobs:
+  audit:
+    uses: ./.github/workflows/audit.yaml
+    secrets: inherit
+    with:
+      python_version: '3.13'
+
+  verify-checksums:
+    # do not run if the commit message or PR description contains [skip-verify-checksums]
+    if: >-
+      ${{ inputs.with_packages == 'true' }} &&
+      !contains(github.event.pull_request.body, '[skip-verify-checksums]') &&
+      !contains(github.event.head_commit.message, '[skip-verify-checksums]') }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+      with:
+        fetch-depth: 2
+    - uses: ./.github/actions/configure-spack
+    - name: Verify Added Checksums
+      run: |
+        . spack-core/share/spack/setup-env.sh
+        spack config add -f .ci/repos.yaml
+        spack repo add spack_repo/builtin
+        spack ci verify-versions HEAD^1 HEAD

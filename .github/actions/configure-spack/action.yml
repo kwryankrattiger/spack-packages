@@ -1,0 +1,22 @@
+name: 'Configure Spack Core'
+description: 'Configure Spack Core'
+runs:
+  using: "composite"
+  steps:
+    - name: Clone Spack
+      run: |
+        mkdir spack-core
+        cd spack-core
+        git init
+        git remote add origin https://github.com/spack/spack.git
+        git fetch --depth 1 origin ${SPACK_CHECKOUT_VERSION}
+        git checkout FETCH_HEAD
+        cd ../
+
+    - name: Configure Spack (windows)
+      if: ${{ runner.os == "Windows" }}
+      run: ./spack-core/share/spack/setup-env.ps1
+
+    - name: Configure Spack (not windows)
+      if: ${{ runner.os != "Windows" }}
+      run: . ./spack-core/share/spack/setup-env.sh
