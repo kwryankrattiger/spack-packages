@@ -1,7 +1,6 @@
 stages: [ "generate", "build" ]
 
 variables:
-  SPACK_CHECKOUT_VERSION: "7f8c5bd4ca8e0f13415ef127689a61e05596003a" # commit on develop
   SPACK_DISABLE_LOCAL_CONFIG: "1"
   SPACK_USER_CACHE_PATH: "${CI_PROJECT_DIR}/tmp/_user_cache/"
   # PR_MIRROR_FETCH_DOMAIN: "https://binaries-prs.spack.io"
@@ -235,6 +234,16 @@ default:
 .build:
   extends: [ ".base-job" ]
   stage: build
+
+
+# Inject the dotenv file
+dotenv:
+  stage: .pre
+  artifacts:
+    reports:
+      dotenv: .env
+  tags: [ "spack", "service" ]
+  script: cat .env
 
 ########################################
 # TEMPLATE FOR ADDING ANOTHER PIPELINE
