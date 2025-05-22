@@ -5,11 +5,7 @@ inputs:
     type: string
     required: false
     default: spack-core
-  shell:
-    type: string
-    required: true
-    default: bash
-  fetch_depth:
+  fetch-depth:
     type: int
     required: false
     default: 1
@@ -18,21 +14,21 @@ runs:
   steps:
     - name: Setup Base
       if: runner.os == 'Windows'
-      shell: ${{ inputs.shell }}
+      shell: bash
       run: mkdir ${{ inputs.path }}
 
     - name: Setup Base
       if: runner.os != 'Windows'
-      shell: ${{ inputs.shell }}
+      shell: bash
       run: mkdir -p ${{ inputs.path }}
 
     - name: Clone Spack
-      shell: ${{ inputs.shell }}
+      shell: bash
       run: |
         . ./.env
         cd ${{ inputs.path }}
         git init
         git remote add origin https://github.com/spack/spack.git
-        git fetch --depth ${{ inputs.fetch_depth }} origin ${SPACK_CHECKOUT_VERSION}
+        git fetch --depth ${{ inputs.fetch-depth }} origin ${SPACK_CHECKOUT_VERSION}
         git checkout FETCH_HEAD
         cd -
