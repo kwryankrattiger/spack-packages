@@ -16,6 +16,7 @@ class PyDvc(PythonPackage):
 
     license("Apache-2.0")
 
+    version("3.7.0", sha256="acf8563d91c321cbd232a727ebbb7e52fc899589fa8e49833d47146736591063")
     version("2.1.0", sha256="46cfbf0db27107fb3a2d5c643e3a948bb24539bf165ef70e77ce64283959e481")
     version("1.11.10", sha256="6b53ebf1bd5619836f131181402bb21f7b44109166e9db8f8d6a0d8c7ce9458d")
     version("1.11.6", sha256="41ba76c51c6142b28dae3aab039cb12423ba52fed6bd2a838f8308f315cfc20b")
@@ -54,7 +55,7 @@ class PyDvc(PythonPackage):
     depends_on("py-pydot@1.2.4:", type=("build", "run"))
     depends_on("py-flatten-dict@0.3.0:0", type=("build", "run"))
     depends_on("py-tabulate@0.8.7:", type=("build", "run"))
-    depends_on("py-pygtrie@2.3.2", type=("build", "run"))
+    depends_on("py-pygtrie@2.3.2:", type=("build", "run"))
     depends_on("py-dpath@2.0.1:2", type=("build", "run"))
     depends_on("py-shtab@1.3.2:1", type=("build", "run"), when="@:1.11.10")
     depends_on("py-shtab@1.3.4:1", type=("build", "run"), when="@2.1.0:")
@@ -64,7 +65,7 @@ class PyDvc(PythonPackage):
     depends_on("py-python-benedict@0.21.1:", type=("build", "run"))
     depends_on("py-pyparsing@2.4.7", type=("build", "run"))
     depends_on("py-typing-extensions@3.7.4:", type=("build", "run"))
-    depends_on("py-fsspec@0.9.0", type=("build", "run"), when="@2.1.0:")
+    depends_on("py-fsspec@0.9.0:", type=("build", "run"), when="@2.1.0:")
     depends_on("py-diskcache@5.2.1:", type=("build", "run"), when="@2.1.0:")
 
     depends_on("py-paramiko@2.7.0:+invoke", when="+ssh", type=("build", "run"))
