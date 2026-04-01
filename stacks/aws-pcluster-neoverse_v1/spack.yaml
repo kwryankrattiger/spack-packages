@@ -90,8 +90,11 @@ spack:
   ci:
     pipeline-gen:
     - build-job:
-        image: {name: ghcr.io/spack/pcluster-amazonlinux-2:2026-03-10, entrypoint: ['']}
-        tags: [aarch64]
+      image: {
+        name: "ghcr.io/spack/pcluster-amazonlinux-2:sha256:793a2991ac4b65e5c13c2b35127f19501911b2c11c67350f795b7ff56aa59ad7",
+        entrypoint: ['']
+      }
+      tags: [aarch64]
     - signing-job:
         before_script:
             # Do not distribute Intel & ARM binaries
