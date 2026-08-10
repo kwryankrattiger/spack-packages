@@ -2,20 +2,39 @@ spack:
   view: false
 
   include:
-  - ../../.ci/gitlab/
+  # - ../../../.ci/gitlab/
+  - ../base/packages.yaml
+  - ../hpc-libs/packages.yaml
+    # - ../gpu/packages.yaml
+
+  concretizer:
+    unify: when_possible
+    reuse:
+      from:
+        - type: environment
+          path: ${SPACK_CONCRETE_ENV_DIR}/linux/x86/base
+        - type: environment
+          path: ${SPACK_CONCRETE_ENV_DIR}/linux/x86/hpc-libs
+        - type: environment
+          path: ${SPACK_CONCRETE_ENV_DIR}/linux/x86/gpu
+
   packages:
     all:
       target: ["x86_64_v3"]
       require:
       - target=x86_64_v3
     mpi:
-      require: openmpi
+      require:
+        - openmpi
     python:
-      require: "@3.13: target=x86_64_v3"
+      require:
+       - "@3.13: target=x86_64_v3"
     py-jaxlib:
-      require: "target=x86_64_v3 %c,cxx=clang"
+      require:
+        - "target=x86_64_v3 %c,cxx=clang"
     py-tensorflow:
-      require: "target=x86_64_v3 %c,cxx=clang"
+      require:
+        - "target=x86_64_v3 %c,cxx=clang"
 
   definitions:
   - hugging_face_specs:
