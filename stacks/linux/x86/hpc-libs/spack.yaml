@@ -1,0 +1,103 @@
+spack:
+  include:
+    - ../base/packages.yaml
+
+  concretizer:
+    reuse:
+      from:
+        - type: environment
+          path: ${SPACK_CONCRETE_ENV_DIR}/linux/x86/base
+
+    unify: when_possible
+
+  packages:
+    all:
+      require:
+      - target=x86_64_v3
+
+    # Using the Data and Vis Integration spec for core IO packages
+    # Extracted from https://github.com/DAV-SDK/davsdk/blob/main/spack/configs/packages.yaml
+    adios2:
+      require:
+        - +shared+mpi+python+sst+dataman+hdf5+zfp
+    hdf5:
+      require:
+        - +shared+mpi
+    parallel-netcdf:
+      require:
+        - +shared
+    ascent:
+      require:
+        - +adios2+openmp+mpi+python+shared+vtkh+test
+      conflict:
+        - "@develop"
+    conduit:
+      require:
+        - ~hdf5_compat
+
+    libcatalyst:
+      require:
+        - +mpi
+
+  definitions:
+    - blas_lapack:
+      - openblas
+      - netlib-xblas
+      - netlib-lapack
+      - flexiblas
+
+    - scalapack:
+      - intel-oneapi-mkl
+      - matrix:
+        - - netlib-scalapack
+        - - ^openblas
+
+    - parallel-io:
+        - "hdf5@1.14"
+        - hdf5-vol-async
+        - hdf5-vol-cache
+        - hdf5-vol-log
+        - "hdf5@1.8" # Compatibility
+        - ascent
+        - adios2
+        - netcdf-c
+        - netcdf-cxx
+        - netcdf-fortran
+        - parallel-netcdf
+
+  specs:
+    - group: hpc-blas
+      specs:
+        - $blas_lapack
+
+    # TODO: Pick specific version(s) of MPICH for splicing compat
+    - group: hpc-mpich
+      needs: [hpc-blas]
+      specs:
+        - matrix:
+          - - $parallel-io
+            - $scalapack
+          - - ^mpich
+        - mpich
+
+      override:
+        packages:
+          mpi:
+            prefer:
+            - mpich
+
+    # TODO: Pick specific version(s) of OpenMPI for splicing compat
+    - group: hpc-openmpi
+      needs: [hpc-blas]
+      specs:
+        - matrix:
+          - - $parallel-io
+            - $scalapack
+          - - ^openmpi
+        - openmpi
+
+      override:
+        packages:
+          mpi:
+            prefer:
+            - openmpi
