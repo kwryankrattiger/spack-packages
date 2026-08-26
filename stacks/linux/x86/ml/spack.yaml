@@ -1,11 +1,16 @@
+# Copyright Spack Project Developers. See COPYRIGHT file for details.
+#
+# SPDX-License-Identifier: (Apache-2.0 OR MIT)
+# Maintainers:
+# - adamstewart
 spack:
   view: false
 
   include:
   # - ../../../.ci/gitlab/
-  - ../base/packages.yaml
-  - ../hpc-libs/packages.yaml
-    # - ../gpu/packages.yaml
+  - ../base/config/
+  - ../hpc-libs/config/
+  # - ../gpu/packages.yaml
 
   concretizer:
     unify: when_possible
@@ -34,7 +39,9 @@ spack:
         - "target=x86_64_v3 %c,cxx=clang"
     py-tensorflow:
       require:
-        - "target=x86_64_v3 %c,cxx=clang"
+        - one_of:
+          - "target=x86_64_v3 ~rocm %c,cxx=clang"
+          - "target=x86_64_v3 +rocm %c,cxx=gcc"
 
   definitions:
   - hugging_face_specs:

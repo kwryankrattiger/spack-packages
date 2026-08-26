@@ -20,6 +20,10 @@ spack:
       - +strip build_type=RelWithDebInfo
       - languages=c,c++,fortran,lto
 
+    cmake:
+      require:
+        - ~qtgui
+
     llvm:
       require:
       - +clang ~flang +lld +zstd ~gold +utils +llvm_dylib +link_llvm_dylib
@@ -35,7 +39,6 @@ spack:
     - elfutils
 
   - languages:
-    - "llvm@16:"
     - rust@1.96.1 +dev
     - go@1.25.12
     - r@4.5.3
@@ -47,7 +50,10 @@ spack:
     - "python@3.13:" # General target version
     - python@3.10.20 # compatibility version
 
-  - build_systems:
+  - extra-compilers:
+    - "llvm@16:"
+
+  - build-systems:
     - matrix:
       - - cmake +ownlibs
       - - '@3.31.12'
@@ -92,7 +98,8 @@ spack:
   - group: bootstrap-base-runtimes
     needs: [bootstrap-gcc]
     specs:
-    - $build_systems
+    - $extra-compilers
+    - $build-systems
     - $languages
     - $python
     - $utils
