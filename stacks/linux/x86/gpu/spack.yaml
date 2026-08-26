@@ -7,7 +7,7 @@
 
 spack:
   include:
-    - ../base/packages.yaml
+    - ../base/config/
 
   concretizer:
     reuse:
@@ -28,9 +28,16 @@ spack:
       require:
         - +rocm-device-libs +llvm_dylib
 
+    mesa:
+      require:
+        - +osmesa +glx +llvm
+
   definitions:
     - cuda:
       - cuda@13
+
+    - gl-libs:
+      - mesa
 
     - rocm:
       - matrix:
@@ -73,6 +80,7 @@ spack:
 
   specs:
     - $cuda
+    - $gl-libs
 
     - group: rocm-gfx90a
       specs:

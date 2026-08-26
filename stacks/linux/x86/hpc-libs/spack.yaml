@@ -1,6 +1,7 @@
 spack:
   include:
-    - ../base/packages.yaml
+    - ./config/
+    - ../base/config/
 
   concretizer:
     reuse:
@@ -15,6 +16,7 @@ spack:
       require:
       - target=x86_64_v3
 
+    ###############################################################################################
     # Using the Data and Vis Integration spec for core IO packages
     # Extracted from https://github.com/DAV-SDK/davsdk/blob/main/spack/configs/packages.yaml
     adios2:
@@ -34,12 +36,31 @@ spack:
     conduit:
       require:
         - ~hdf5_compat
-
     libcatalyst:
       require:
         - +mpi
+    ###############################################################################################
+
+    # Prefer intel-oneapi
+    ipp:
+      prefer:
+        - intel-oneapi-tbb
+    tbb:
+      prefer:
+        - intel-oneapi-tbb
 
   definitions:
+    - intel-oneapi:
+      - intel-oneapi-dal
+      - intel-oneapi-tbb
+      - intel-oneapi-ipp
+
+    - mpi:
+      - mpich
+      - openmpi
+      - intel-oneapi-mpi
+      - intel-oneapi-ccl
+
     - blas_lapack:
       - openblas
       - netlib-xblas
@@ -66,13 +87,16 @@ spack:
         - parallel-netcdf
 
   specs:
-    - group: hpc-blas
+    - group: mpi-libs
+      specs:
+        - $mpi
+
+    - group: blas-libs
       specs:
         - $blas_lapack
 
-    # TODO: Pick specific version(s) of MPICH for splicing compat
-    - group: hpc-mpich
-      needs: [hpc-blas]
+    - group: mpich-abi
+      needs: [mpi-libs, blas-libs]
       specs:
         - matrix:
           - - $parallel-io
@@ -86,9 +110,8 @@ spack:
             prefer:
             - mpich
 
-    # TODO: Pick specific version(s) of OpenMPI for splicing compat
-    - group: hpc-openmpi
-      needs: [hpc-blas]
+    - group: openmpi-abi
+      needs: [mpi-libs, blas-libs]
       specs:
         - matrix:
           - - $parallel-io
