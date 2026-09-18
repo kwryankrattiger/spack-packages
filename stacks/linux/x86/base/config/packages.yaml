@@ -20,6 +20,10 @@ packages:
     prefer:
       - "@3.10.20"
 
+  clang:
+    prefer:
+      - "@16:"
+
   llvm:
     prefer:
       - "@16:"

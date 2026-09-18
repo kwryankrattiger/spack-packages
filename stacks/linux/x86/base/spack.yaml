@@ -73,6 +73,9 @@ spack:
   # These build systems require python
   # which creates a requirement to duplicate the DAG for each
   - py_build_systems:
+    - py-pip
+    - py-wheel
+    - python-venv
     - meson@1.11.1
     - matrix:
       - - py-setuptools
@@ -85,7 +88,6 @@ spack:
       - - bazel
       - - '@7.7.1'
         - '@6.5.0'
-
 
   specs:
     # Bootstrap the base compiler

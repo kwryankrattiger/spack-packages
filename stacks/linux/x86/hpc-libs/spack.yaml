@@ -8,6 +8,8 @@ spack:
       from:
         - type: environment
           path: ${SPACK_CONCRETE_ENV_DIR}/linux/x86/base
+        - type: environment
+          path: ${SPACK_CONCRETE_ENV_DIR}/linux/x86/gpu
 
     unify: when_possible
 
@@ -55,9 +57,12 @@ spack:
       - intel-oneapi-tbb
       - intel-oneapi-ipp
 
-    - mpi:
+    - mpi-gpu-aware:
       - mpich
       - openmpi
+      # - mvapich # TODO: Enable CUDA/ROCm variants
+
+    - intel-mpi:
       - intel-oneapi-mpi
       - intel-oneapi-ccl
 
@@ -89,7 +94,27 @@ spack:
   specs:
     - group: mpi-libs
       specs:
-        - $mpi
+        - mvapich
+        - matrix:
+          - - $mpi-gpu-aware
+          - - ~cuda ~rocm
+        - $intel-mpi
+
+    - group: mpi-cuda
+      specs:
+        - matrix:
+          - - $mpi-gpu-aware
+          - - +cuda ~rocm
+          - - cuda_arch=80
+            - cuda_arch=90
+            - cuda_arch=100
+
+    - group: mpi-rocm
+      specs:
+        - matrix:
+          - - $mpi-gpu-aware
+          - - ~cuda +rocm
+          - - amdgpu_target=gfx90a
 
     - group: blas-libs
       specs:
