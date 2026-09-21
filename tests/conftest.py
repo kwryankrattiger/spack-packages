@@ -125,7 +125,10 @@ def mock_stage(tmp_path_factory: pytest.TempPathFactory, monkeypatch, request):
     source_path = new_stage / spack.stage._source_path_subdir
     source_path.mkdir(parents=True, exist_ok=True)
 
-    monkeypatch.setattr(spack.stage, "_stage_root", str(new_stage))
+    def _stage_root(config) -> str:
+        return str(new_stage)
+
+    monkeypatch.setattr(spack.stage, "stage_root", _stage_root)
 
     yield str(new_stage)
 
@@ -220,7 +223,12 @@ class MockCacheFetcher:
 @pytest.fixture(autouse=True)
 def mock_fetch_cache(monkeypatch):
     """Substitutes FETCH_CACHE that raises on fetch."""
-    monkeypatch.setattr(spack.caches, "FETCH_CACHE", MockCache())
+    mock_cache = MockCache()
+
+    def _fetch_cache(config):
+        return mock_cache
+
+    monkeypatch.setattr(spack.caches, "fetch_cache", _fetch_cache)
 
 
 @pytest.fixture(autouse=True, scope="session")
