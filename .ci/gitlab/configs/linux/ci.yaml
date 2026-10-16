@@ -1,440 +1,1259 @@
 ci:
   pipeline-gen:
-  - build-job:
-      before_script-:
-      # Test package relocation on linux using a modified prefix
-      # This is not well supported on MacOS (https://github.com/spack/spack/issues/37162)
-      - - spack config add "config:install_tree:projections:${SPACK_JOB_SPEC_PKG_NAME}/${SPACK_JOB_SPEC_DAG_HASH}:'morepadding/{architecture.platform}-{architecture.target}/{name}-{version}-{hash}'"
-  - match_behavior: first
+  - match_behavoir: first
     submapping:
-    - match:
+    - build-job:
+        tags:
+        - spack
+        - huge
+        variables:
+          CI_JOB_SIZE: huge
+          KUBERNETES_CPU_REQUEST: 12000m
+          KUBERNETES_MEMORY_REQUEST: 64G
+          SPACK_BUILD_JOBS: '12'
+      match:
+      - openloops
       - composable-kernel
+      - llvm-amdgpu
       - py-torch
       - wrf
-      build-job:
-        tags: [ "spack", "huge" ]
-        # 12h for long ROCm/ML rebuilds (maximum allowed for AWS runners)
-        timeout: 720 minutes
-        variables:
-          CI_JOB_SIZE: huge
-          SPACK_BUILD_JOBS: "12"
-          KUBERNETES_CPU_REQUEST: 12000m
-          KUBERNETES_MEMORY_REQUEST: 48G
-
-    - match:
-      - llvm-amdgpu
       - nvhpc
-      build-job:
-        tags: [ "spack", "huge" ]
-        variables:
-          CI_JOB_SIZE: huge
-          SPACK_BUILD_JOBS: "12"
-          KUBERNETES_CPU_REQUEST: 12000m
-          KUBERNETES_MEMORY_REQUEST: 42G
-
-    - match:
       - py-tensorflow
-      - rccl
-      build-job:
-        tags: [ "spack", "huge" ]
-        variables:
-          CI_JOB_SIZE: huge
-          SPACK_BUILD_JOBS: "12"
-          KUBERNETES_CPU_REQUEST: 12000m
-          KUBERNETES_MEMORY_REQUEST: 32G
-
-    - match:
-      - dealii
-      build-job:
-        tags: [ "spack", "huge" ]
-        variables:
-          CI_JOB_SIZE: huge
-          SPACK_BUILD_JOBS: "12"
-          KUBERNETES_CPU_REQUEST: 12000m
-          KUBERNETES_MEMORY_REQUEST: 29G
-
-    - match:
-      - py-jaxlib
-      build-job:
-        tags: [ "spack", "huge" ]
-        variables:
-          CI_JOB_SIZE: huge
-          SPACK_BUILD_JOBS: "12"
-          KUBERNETES_CPU_REQUEST: 12000m
-          KUBERNETES_MEMORY_REQUEST: 26G
-
-    - match:
-      - ginkgo
-      - llvm
-      - py-torchaudio
-      - rocblas
-      build-job:
-        tags: [ "spack", "huge" ]
-        variables:
-          CI_JOB_SIZE: huge
-          SPACK_BUILD_JOBS: "12"
-          KUBERNETES_CPU_REQUEST: 12000m
-          KUBERNETES_MEMORY_REQUEST: 21G
-
-    - match:
       - trilinos
+      - ginkgo
+      - py-jaxlib
+      - axom
       - vtk-m
-      build-job:
-        tags: [ "spack", "huge" ]
+      - dla-future
+      - py-amrex
+      - hipblaslt
+      - node-js
+      - llvm
+      - xyce
+    - build-job:
+        tags:
+        - spack
+        - large
         variables:
-          CI_JOB_SIZE: huge
-          SPACK_BUILD_JOBS: "12"
+          CI_JOB_SIZE: large
           KUBERNETES_CPU_REQUEST: 12000m
-          KUBERNETES_MEMORY_REQUEST: 18G
-
-    - match:
-      - acts
+          KUBERNETES_MEMORY_REQUEST: 17G
+          SPACK_BUILD_JOBS: '12'
+      match:
+      - kokkos-fft
       - cuda
-      - dd4hep
-      - openfoam
-      - rust
-      - salmon
-      build-job:
-        tags: [ "spack", "large" ]
-        variables:
-          CI_JOB_SIZE: large
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: 8000m
-          KUBERNETES_MEMORY_REQUEST: 15G
-
-    - match:
-      - ascent
-      - cistem
-      - dray
-      - ecp-data-vis-sdk
-      - kokkos
-      - legion
-      - mpich
-      - openturns
       - paraview
-      - qt
-      - relion
-      - rocsolver
+      - aotriton-llvm
+      - openfoam
+      - py-onnx
+      - py-torchvision
+      - rocblas
+      - chapel
+      - rccl
       - root
-      - sundials
-      - tasmanian
-      - upcxx
-      - vtk-h
-      build-job:
-        tags: [ "spack", "large" ]
-        variables:
-          CI_JOB_SIZE: large
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: 8000m
-          KUBERNETES_MEMORY_REQUEST: 12G
-
-    - match:
+      - rocm-openmp-extras
+      - rust
+      - amrex
+      - julia
+      - py-torch-nvidia-apex
+      - acts
+      - py-uv
+      - qt
+      - arkouda
+      - bazel
+      - dd4hep
+      - rocsolver
+      - hpx
+      - legion
+      - mgard
+      - mpich
+      - precice
+      - py-pandas
+      - rivet
+      - rocmlir
+      - vecgeom
+      - viskores
       - adios2
+      - boost
       - cabana
       - camp
-      - gaudi
-      - geant4
-      - hipblas
-      - hpx
-      - lammps
-      - mesa
-      - py-cinemasci
-      - qt-declarative
-      - strumpack
-      - sundials
-      - tau
-      - umpire
-      build-job:
-        tags: [ "spack", "large" ]
-        variables:
-          CI_JOB_SIZE: "large"
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: "8000m"
-          KUBERNETES_MEMORY_REQUEST: "9G"
-
-    - match:
-      - amrex
-      - axom
-      - blaspp
-      - caliper
-      - chai
-      - ecp-data-vis-sdk
+      - conduit
       - gcc
       - hdf5
-      - heffte
-      - hpctoolkit
-      - hypre
-      - lapackpp
-      - mfem
-      - omega-h
-      - openmpi
-      - parsec
-      - petsc
-      - precice
-      - qt-base
-      - raja
-      - rivet
-      - rocsparse
-      - superlu-dist
-      - visit
-      - vtk
-      - zfp
-      build-job:
-        tags: [ "spack", "large" ]
-        variables:
-          CI_JOB_SIZE: "large"
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: "8000m"
-          KUBERNETES_MEMORY_REQUEST: "8G"
-
-    - match:
       - hwloc
+      - kokkos
       - kokkos-kernels
       - kokkos-nvcc-wrapper
-      - lbann
-      - magma
-      - papi
-      - rocfft
-      - slepc
-      build-job:
-        tags: [ "spack", "large" ]
-        variables:
-          CI_JOB_SIZE: "large"
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: "8000m"
-          KUBERNETES_MEMORY_REQUEST: "7G"
-
-    - match:
+      - libdistributed
+      - libpressio
+      - omega-h
+      - parmetis
+      - py-grpcio
+      - py-mpi4py
+      - py-onnxruntime
+      - raja
+      - ucx
+      - umpire
+      - valgrind
+      - vtk
+      - zfp
+      - arrow
+      - bricks
+      - caliper
+      - chai
+      - cudnn
+      - cusparselt
+      - cusz
+      - ddc
+      - dxt-explorer
       - dyninst
-      - intel-tbb
-      - sherpa
-      build-job:
-        tags: [ "spack", "medium" ]
+      - ecp-data-vis-sdk
+      - edm4hep
+      - fftx
+      - gdal
+      - geant4
+      - glvis
+      - glx
+      - hypre
+      - intel-oneapi-compilers
+      - lbann
+      - libcatalyst
+      - magma
+      - mesa
+      - mfem
+      - miopen-hip
+      - nccl
+      - netcdf-c
+      - nvcomp
+      - openmpi
+      - parsec
+      - pmix
+      - podio
+      - prrte
+      - py-botorch
+      - py-geopandas
+      - py-gpytorch
+      - py-h5py
+      - py-keras
+      - py-kornia
+      - py-kornia-rs
+      - py-lightly
+      - py-lightning
+      - py-linear-operator
+      - py-llvmlite
+      - py-networkx
+      - py-numba
+      - py-pyogrio
+      - py-pyro-ppl
+      - py-pytorch-lightning
+      - py-rasterio
+      - py-ruff
+      - py-segmentation-models-pytorch
+      - py-timm
+      - py-torch-geometric
+      - py-torchaudio
+      - py-torchgeo
+      - py-torchmetrics
+      - py-vector-quantize-pytorch
+      - pythia8
+      - qt-base
+      - visit
+    - build-job:
+        tags:
+        - spack
+        - medium
         variables:
-          CI_JOB_SIZE: "medium"
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: "8000m"
-          KUBERNETES_MEMORY_REQUEST: "6G"
-
-    - match:
-      - cmake
-      - openblas
-      - slate
-      build-job:
-        tags: [ "spack", "medium" ]
-        variables:
-          CI_JOB_SIZE: "medium"
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: "8000m"
-          KUBERNETES_MEMORY_REQUEST: "5G"
-
-    - match:
-      - oce
-      - parallel-netcdf
-      build-job:
-        tags: [ "spack", "medium" ]
-        variables:
-          CI_JOB_SIZE: "medium"
-          SPACK_BUILD_JOBS: "4"
-          KUBERNETES_CPU_REQUEST: "4000m"
-          KUBERNETES_MEMORY_REQUEST: "3G"
-
-    - match:
-      - archer
-      - autoconf-archive
-      - blt
-      - boost
+          CI_JOB_SIZE: medium
+          KUBERNETES_CPU_REQUEST: 8000m
+          KUBERNETES_MEMORY_REQUEST: 6G
+          SPACK_BUILD_JOBS: '8'
+      match:
+      - adiak
       - butterflypack
-      - curl
-      - datatransferkit
-      - dray
-      - eigen
-      - fortrilinos
-      - gettext
-      - hydrogen
-      - libxml2
-      - libzmq
-      - llvm-openmp-ompt
-      - mvapich2
-      - openpmd-api
-      - pygmo
-      - py-petsc4py
-      - py-scipy
-      - slurm
-      - sqlite
-      - vtk-h
-      - warpx
-      - warpx +python
-      build-job:
-        tags: [ "spack", "medium" ]
-        variables:
-          CI_JOB_SIZE: "medium"
-          SPACK_BUILD_JOBS: "2"
-          KUBERNETES_CPU_REQUEST: "2000m"
-          KUBERNETES_MEMORY_REQUEST: "4G"
-
-    - match:
-      - ascent
-      - binutils
-      - conduit
-      - double-conversion
-      - faodel
-      - fftw
-      - libtool
-      - mpich
-      - nasm
-      - ninja
-      - pagmo2
-      - pegtl
-      - pdt
-      - plumed
-      - pumi
-      - py-statsmodels
-      - strumpack
-      build-job:
-        tags: [ "spack", "medium" ]
-        variables:
-          CI_JOB_SIZE: "medium"
-          SPACK_BUILD_JOBS: "2"
-          KUBERNETES_CPU_REQUEST: "2000m"
-          KUBERNETES_MEMORY_REQUEST: "2G"
-
-    - match:
-      - netlib-lapack
-      build-job:
-        tags: [ "spack", "medium" ]
-        variables:
-          CI_JOB_SIZE: "medium"
-          SPACK_BUILD_JOBS: "8"
-          KUBERNETES_CPU_REQUEST: "8000m"
-          KUBERNETES_MEMORY_REQUEST: "1G"
-
-    - match:
-      - gptune
-      - ffmpeg
-      - gperftools
+      - cepgen
+      - embree
+      - flux-core
+      - gaudi
+      - gl2ps
+      - glew
+      - gromacs
+      - hdf5-vfd-gds
+      - hdf5-vol-async
+      - heffte
+      - hepmc3
+      - hip
+      - hpctoolkit
+      - intel-oneapi-mkl
+      - libaec
+      - libint
+      - mesa-glu
       - netlib-scalapack
-      - parallelio
-      - py-beniget
-      - py-ipython-genutils
-      - py-packaging
+      - palace
+      - papi
+      - petsc
+      - py-darshan
+      - py-deephyper
+      - py-hist
+      - py-ty
+      - qt-tools
+      - realm
+      - rocrand
+      - rocthrust
+      - slepc
+      - strumpack
+      - superlu-dist
+      - tasmanian
+      - tau
+      - arborx
+      - arpack-ng
+      - blaspp
+      - celeritas
+      - cmake
+      - comgr
+      - delphes
+      - doxygen
+      - drishti
+      - fftw
+      - flecsi
+      - flux-sched
+      - ftgl
+      - g4vg
+      - geomodel
+      - hipcub
+      - hipify-clang
+      - hiprand
+      - lapackpp
+      - lcio
+      - libceed
+      - libfabric
+      - openblas
+      - osmesa
+      - pandoramonitoring
+      - pegtl
+      - phist
+      - protobuf
+      - py-arkouda
+      - py-cinemasci
+      - py-dask
+      - py-dask-awkward
+      - py-dask-histogram
+      - py-hatchet
+      - py-iminuit
+      - py-libclang
+      - py-petsc4py
+      - py-pyarrow
+      - py-scikit-image
+      - py-seaborn
+      - py-tensorflow-metadata
+      - rocfft
+      - rocprim
+      - roctracer-dev
+      - sherpa
+      - slate
+      - sundials
+      - whizard
+      - yoda
+      - z3
+      - actsvg
+      - aotriton
+      - assimp
+      - cp2k
+      - datatransferkit
+      - fides
+      - flatbuffers
+      - gasnet
+      - harfbuzz
+      - hipblas
+      - hipsparse
+      - hsa-rocr-dev
+      - intel-xed
+      - ispc
+      - lammps
+      - libxsmm
+      - openimagedenoise
+      - proj
+      - py-boost-histogram
+      - py-contourpy
+      - py-matplotlib
+      - py-numpy
+      - py-zfit
+      - qt-5compat
+      - qt-svg
+      - qwt
+      - rocminfo
+      - rocsparse
+      - sz3
+      - upcxx
+      - warpx
+      - xgboost
+      - abseil-cpp
+      - armpl-gcc
+      - ascent
+      - asio
+      - berkeley-db
+      - c-blosc
+      - clingo-bootstrap
+      - cppcheck
+      - diffutils
+      - elpa
+      - gdb
+      - geos
+      - gmake
+      - gnutls
+      - hipfft
+      - hydrogen
+      - laghos
+      - libbsd
+      - libffi
+      - libiconv
+      - libjpeg-turbo
+      - libpng
+      - libsigsegv
+      - libxml2
+      - lz4
+      - metis
+      - nasm
+      - nco
+      - ncurses
+      - njet
+      - nwchem
+      - opencv
+      - openpmd-api
+      - openvkl
+      - parallel-netcdf
+      - pdi
+      - pflotran
+      - pika
+      - py-awkward-cpp
+      - py-bottleneck
+      - py-hf-xet
+      - py-jaxtyping
+      - py-maturin
+      - py-optree
+      - py-pydantic-core
+      - py-pythran
+      - py-scikit-learn
+      - py-scipy
+      - py-shapely
+      - py-tensorboard-data-server
+      - quantum-espresso
+      - rocm-smi-lib
+      - snappy
+      - thepeg
+      - thrift
+      - veloc
+      - xrootd
+      - xz
+      - zstd
+      - apfel
+      - armadillo
+      - autoconf
+      - automake
+      - binutils
+      - bison
+      - bolt
+      - brotli
+      - bzip2
+      - c-blosc2
+      - cairo
+      - callpath
+      - care
+      - ccache
+      - cernlib
+      - cgal
+      - charliecloud
+      - clhep
+      - curl
+      - darshan-runtime
+      - dbcsr
+      - dihydrogen
+      - eigen
+      - elfutils
+      - emacs
+      - evtgen
+      - exaworks
+      - expat
+      - eza
+      - faodel
+      - fd
+      - feynhiggs
+      - ffmpeg
+      - file
+      - findutils
+      - fjcontrib
+      - flex
+      - fmt
+      - fortrilinos
+      - fpm
+      - gcc-runtime
+      - gdbm
+      - gettext
+      - gflags
+      - gh
+      - git
+      - glib
+      - glib-bootstrap
+      - glm
+      - glog
+      - go
+      - gobject-introspection
+      - googletest
+      - gosam-contrib
+      - gperftools
+      - hdf5-vol-log
+      - hipblas-common
+      - hipcc
+      - hyperfine
+      - icu4c
+      - intel-oneapi-mpi
+      - intel-oneapi-runtime
+      - intel-oneapi-tbb
+      - intel-tbb
+      - jasper
+      - jsoncpp
+      - krb5
+      - less
+      - lhapdf
+      - libedit
+      - libevent
+      - libfuse
+      - libgeopm
+      - libgeopmd
+      - libgeotiff
+      - libgit2
+      - libidn2
+      - libmd
+      - libpciaccess
+      - libtirpc
+      - libtool
+      - libunistring
+      - libxc
+      - libxcb
+      - libxcrypt
+      - lizard
+      - lsd
+      - m4
+      - madgraph5amc
+      - mercury
+      - mimalloc
+      - mpileaks
+      - msgpack-c
+      - nccmp
+      - netcdf-fortran
+      - netlib-lapack
+      - nghttp2
+      - ninja
+      - nlohmann-json
+      - nrm
+      - numactl
+      - nvtx
+      - oneapi-level-zero
+      - openssh
+      - openssl
+      - ospray
+      - otf2
+      - p7zip
+      - pandorasdk
+      - pcre2
+      - pdt
+      - perl
+      - pigz
+      - pixman
+      - pkgconf
+      - plumed
+      - pruners-ninja
+      - pumi
+      - py-aiohttp
+      - py-anyio
+      - py-argon2-cffi-bindings
+      - py-asttokens
+      - py-attrs
+      - py-beautifulsoup4
+      - py-blosc2
+      - py-certifi
+      - py-certipy
+      - py-cffi
+      - py-colorama
+      - py-cppy
+      - py-cramjam
+      - py-cryptography
+      - py-cython
+      - py-debugpy
+      - py-deprecation
+      - py-executing
+      - py-filelock
+      - py-fonttools
+      - py-frozenlist
+      - py-fsspec
+      - py-gevent
+      - py-greenlet
+      - py-hatch
+      - py-hatch-fancy-pypi-readme
+      - py-hatch-nodejs-version
+      - py-hatch-vcs
+      - py-hatchling
+      - py-httpx
+      - py-humanize
+      - py-iniconfig
+      - py-ipykernel
+      - py-ipython
+      - py-ipywidgets
+      - py-jedi
+      - py-jinja2
+      - py-jsonschema-specifications
+      - py-jupyter-client
+      - py-jupyter-lsp
+      - py-jupyter-packaging
+      - py-jupyter-server
+      - py-jupyterhub
+      - py-jupyterlab
+      - py-jupyterlab-server
+      - py-keyring
+      - py-kiwisolver
+      - py-libensemble
+      - py-lightly-utils
+      - py-markupsafe
+      - py-matplotlib-inline
+      - py-meson-python
+      - py-ml-dtypes
+      - py-msgpack
+      - py-nbclassic
+      - py-nbclient
+      - py-nbconvert
+      - py-nest-asyncio
+      - py-notebook
+      - py-notebook-shim
+      - py-numcodecs
+      - py-numexpr
+      - py-opt-einsum
+      - py-pexpect
+      - py-pillow
+      - py-platformdirs
+      - py-plotly
+      - py-pluggy
+      - py-ply
+      - py-prometheus-client
+      - py-prompt-toolkit
+      - py-propcache
+      - py-protobuf
+      - py-psutil
+      - py-py
+      - py-pybind11
+      - py-pygments
+      - py-pymoo
+      - py-pyopenssl
+      - py-pyproj
+      - py-pytest-runner
+      - py-python-dateutil
+      - py-pyyaml
+      - py-pyzmq
+      - py-radical-entk
+      - py-radical-gtod
+      - py-radical-saga
+      - py-radical-utils
+      - py-referencing
+      - py-regex
+      - py-requests
+      - py-rfc3987-syntax
+      - py-rpds-py
+      - py-ruamel-yaml-clib
+      - py-safetensors
+      - py-scikit-build
+      - py-scikit-build-core
+      - py-secretstorage
+      - py-setuptools-rust
+      - py-sqlalchemy
+      - py-stack-data
+      - py-sympy
+      - py-tables
+      - py-tensorboard
+      - py-tensorflow-probability
+      - py-termcolor
+      - py-terminado
+      - py-tinycss2
+      - py-tokenizers
+      - py-tqdm
+      - py-traitlets
+      - py-trove-classifiers
+      - py-typeguard
+      - py-typing-extensions
+      - py-urllib3
+      - py-virtualenv
+      - py-wcwidth
+      - py-widgetsnbextension
+      - py-yarl
+      - py-zipp
+      - py-zstandard
+      - python
+      - r
+      - r-rcpp
+      - r-rinside
+      - raja-perf
+      - rapidjson
+      - rdma-core
+      - re2
+      - re2c
+      - readline
+      - rempi
+      - ripgrep
+      - rkcommon
+      - rocprofiler-register
+      - ruby
+      - rust-bootstrap
       - samrai
-      build-job:
-        tags: [ "spack", "medium" ]
-        variables:
-          CI_JOB_SIZE: "medium"
-          SPACK_BUILD_JOBS: "2"
-          KUBERNETES_CPU_REQUEST: "2000m"
-          KUBERNETES_MEMORY_REQUEST: "1G"
-
-    - match:
+      - scitokens-cpp
+      - scnlib
+      - scr
+      - sdl2
+      - silo
+      - sleef
+      - slurm
+      - spdlog
+      - sqlite
+      - stc
+      - suite-sparse
+      - superlu
+      - systemd
+      - sz
+      - tar
+      - tcl
+      - tcsh
+      - time
+      - umap
+      - uncrustify
+      - util-linux-uuid
+      - variorum
+      - voropp
+      - wannier90
+      - wps
+      - xerces-c
+      - xkeyboard-config
+      - yaksa
+      - zlib-ng
+      - adios
+      - adlbx
+      - alquimia
       - alsa-lib
+      - aluminum
+      - aml
       - ant
       - antlr
       - argobots
-      - autoconf-archive
-      - automake
-      - berkeley-db
-      - bison
+      - at-spi2-core
+      - axl
+      - bash
+      - bash-completion
+      - bc
+      - bdftopcf
+      - bdw-gc
+      - bitgroomingz
       - blt
-      - bzip2
-      - curl
-      - czmq
+      - c-ares
+      - ca-certificates-mozilla
+      - cereal
+      - cfitsio
+      - cgns
+      - cjson
+      - cli11
+      - collier
+      - compiler-wrapper
+      - coreutils
+      - cpuinfo
       - darshan-util
-      - diffutils
-      - docbook-xml
-      - exmcutils
-      - expat
-      - findutils
+      - davix
+      - dla-future-fortran
+      - double-conversion
+      - dtcmp
+      - e4s-cl
+      - er
+      - fast-float
+      - fastjet
+      - fixesproto
       - flit
+      - font-util
+      - fontconfig
+      - fontsproto
+      - form
+      - fp16
+      - fpzip
       - freetype
+      - fxdiv
       - gawk
-      - gdbm
-      - gettext
-      - glib
-      - gmake
+      - git-lfs
+      - globalarrays
+      - gmp
       - gotcha
-      - hpcviewer
+      - graphviz
+      - gsl
+      - gzip
+      - h5bench
+      - hdf5-vol-cache
+      - help2man
+      - intltool
+      - isa-l
       - jansson
       - json-c
-      - libbsd
-      - libedit
-      - libevent
-      - libfabric
-      - libffi
+      - kvtree
+      - lcms
+      - lerc
+      - libarchive
+      - libcap
+      - libcircle
+      - libdeflate
+      - libdrm
+      - libdwarf
+      - libfms
       - libgcrypt
-      - libiconv
-      - libidn2
-      - libjpeg-turbo
-      - libmd
+      - libgpg-error
+      - libiberty
+      - libice
+      - libmng
+      - libnl
       - libnrm
-      - libpciaccess
-      - libpng
-      - libsigsegv
+      - libogg
+      - libpthread-stubs
+      - libquo
       - libsodium
-      - libunistring
+      - libssh2
+      - libstdcompat
+      - libtheora
+      - libtiff
       - libunwind
-      - libxml2
+      - liburing
+      - libuv-julia
+      - libx11
+      - libxcursor
+      - libxdmcp
+      - libxext
+      - libxfixes
+      - libxfont
+      - libxkbcommon
+      - libxrandr
+      - libxrender
+      - libxshmfence
+      - libxslt
+      - libxt
       - libyaml
+      - libyogrt
       - libzmq
+      - loki
       - lua
       - lua-luaposix
-      - lz4
-      - m4
+      - lua-sol2
+      - lwgrp
+      - lzo
+      - macsio
       - mbedtls
       - meson
-      - metis
+      - metall
+      - mkfontdir
+      - mkfontscale
+      - mochi-margo
+      - motif
+      - mpark-variant
+      - mpas-model
       - mpfr
-      - ncurses
-      - numactl
-      - openjdk
-      - openjpeg
-      - openssh
-      - openssl
+      - mpifileutils
+      - munge
+      - muparser
+      - nekbone
+      - netcdf-cxx
+      - npm
+      - opencl-clhpp
+      - openlibm
       - papyrus
+      - paraconf
+      - patch
+      - patchelf
       - pcre
-      - pcre2
       - pdsh
-      - perl
+      - perl-clone
       - perl-data-dumper
-      - pkgconf
+      - perl-encode-locale
+      - perl-extutils-config
+      - perl-extutils-helpers
+      - perl-extutils-installpaths
+      - perl-file-listing
+      - perl-file-which
+      - perl-html-parser
+      - perl-html-tagset
+      - perl-http-cookies
+      - perl-http-daemon
+      - perl-http-date
+      - perl-http-message
+      - perl-http-negotiate
+      - perl-io-html
+      - perl-libwww-perl
+      - perl-lwp-mediatypes
+      - perl-module-build
+      - perl-module-build-tiny
+      - perl-net-http
+      - perl-test-needs
+      - perl-try-tiny
+      - perl-uri
+      - perl-uri-encode
+      - perl-www-robotrules
+      - perl-xml-parser
+      - plasma
+      - procps
+      - psimd
+      - pthreadpool
+      - pugixml
+      - py-about-time
+      - py-absl-py
+      - py-aiohappyeyeballs
+      - py-aiosignal
       - py-alembic
-      - py-cffi
+      - py-alive-progress
+      - py-amqp
+      - py-argon2-cffi
+      - py-arrow
+      - py-asdf
+      - py-asdf-transform-schemas
+      - py-asdf-unit-schemas
+      - py-astunparse
+      - py-async-generator
+      - py-async-lru
+      - py-autograd
+      - py-awkward
+      - py-babel
+      - py-beniget
+      - py-bleach
+      - py-build
+      - py-calver
+      - py-charset-normalizer
+      - py-click
+      - py-cligj
+      - py-cloudpickle
+      - py-cma
+      - py-coherent-licensed
+      - py-comm
+      - py-commonmark
+      - py-configspace
+      - py-cppheaderparser
       - py-cycler
       - py-decorator
+      - py-defusedxml
+      - py-deprecated
+      - py-dill
+      - py-distlib
+      - py-distributed
+      - py-distro
+      - py-dm-tree
+      - py-docutils
+      - py-entrypoints
+      - py-expandvars
+      - py-fastjsonschema
+      - py-flatbuffers
+      - py-flit-core
+      - py-fqdn
+      - py-fypp
+      - py-gast
+      - py-google-pasta
+      - py-googleapis-common-protos
+      - py-grapheme
+      - py-h11
+      - py-hatch-jupyter-builder
+      - py-httpcore
+      - py-hydra-core
+      - py-hyperlink
       - py-idna
+      - py-imageio
+      - py-importlib-metadata
+      - py-importlib-resources
+      - py-ipython-genutils
+      - py-ipython-pygments-lexers
+      - py-isoduration
+      - py-jaraco-classes
+      - py-jax
+      - py-jeepney
+      - py-joblib
+      - py-json5
+      - py-jsonargparse
+      - py-jsonpatch
+      - py-jsonpointer
       - py-jsonschema
-      - py-kiwisolver
+      - py-jupyter-core
+      - py-jupyter-events
+      - py-jupyter-server-terminals
+      - py-jupyter-telemetry
+      - py-jupyterlab-pygments
+      - py-jupyterlab-widgets
+      - py-lark
+      - py-lazy-loader
+      - py-loky
+      - py-lz4
+      - py-mako
+      - py-markdown
+      - py-markdown-it-py
+      - py-mdurl
       - py-mistune
+      - py-more-itertools
+      - py-mplhep
+      - py-mpmath
+      - py-multidict
+      - py-namex
+      - py-nanobind
+      - py-narwhals
+      - py-nbformat
+      - py-ndindex
+      - py-netifaces
+      - py-ntplib
+      - py-oauthlib
+      - py-omegaconf
+      - py-openai
+      - py-overrides
+      - py-packaging
+      - py-pamela
+      - py-pandocfilters
+      - py-parse
+      - py-parsl
+      - py-parso
+      - py-particle
+      - py-pathspec
+      - py-pdm-backend
+      - py-periodictable
+      - py-picmistandard
+      - py-pip
+      - py-pkgconfig
+      - py-poetry-core
+      - py-pooch
+      - py-psij-python
+      - py-ptyprocess
+      - py-pure-eval
+      - py-py-cpuinfo
       - py-pycparser
+      - py-pydantic
+      - py-pyelftools
+      - py-pyfiglet
+      - py-pyparsing
+      - py-pyproject-hooks
+      - py-pyproject-metadata
+      - py-pystache
+      - py-pytest
+      - py-python-discovery
+      - py-python-json-logger
+      - py-python-ptrace
+      - py-python-sotools
+      - py-radical-pilot
+      - py-rfc3339-validator
+      - py-rfc3986
+      - py-rfc3986-validator
+      - py-rich
+      - py-ruamel-yaml
+      - py-semantic-version
+      - py-send2trash
+      - py-setproctitle
       - py-setuptools
       - py-setuptools-scm
+      - py-setuptools-scm-git-archive
+      - py-shellingham
       - py-six
-      - py-testpath
+      - py-sortedcontainers
+      - py-soupsieve
+      - py-tabulate
+      - py-tblib
+      - py-tensorboardx
+      - py-texttable
+      - py-threadpoolctl
+      - py-tifffile
+      - py-tinydb
+      - py-toml
+      - py-tomli
+      - py-tomli-w
+      - py-tomlkit
+      - py-tornado
+      - py-tzdata
+      - py-uhi
+      - py-uri-template
+      - py-userpath
+      - py-versioneer
       - py-warlock
+      - py-webcolors
+      - py-webencodings
+      - py-websocket-client
+      - py-werkzeug
       - py-wheel
+      - py-wrapt
+      - py-zope-event
+      - py-zope-interface
+      - python-venv
       - qhull
-      - readline
+      - qthreads
+      - rankstr
+      - redset
+      - renderproto
+      - rocm-cmake
+      - rocm-core
+      - scotch
       - sed
-      - slurm
-      - snappy
-      - sqlite
-      - superlu
+      - shuffile
+      - spath
+      - spiral-software
+      - squashfuse
       - swig
-      - tar
-      - tcl
+      - tauola
       - texinfo
+      - toml11
+      - turbine
+      - udunits
+      - unifyfs
       - unzip
-      - util-linux-uuid
+      - utf8cpp
+      - utf8proc
+      - util-linux
       - util-macros
-      - xz
+      - vala
+      - vdt
+      - xcb-proto
+      - xcb-util
+      - xcb-util-image
+      - xcb-util-keysyms
+      - xcb-util-renderutil
+      - xcb-util-wm
+      - xextproto
+      - xrandr
+      - xsimd
+      - xtrans
+      - xxhash
       - yaml-cpp
+      - yasm
+      - zip
       - zlib
-      - zstd
-      build-job:
-        tags: [ "spack", "small" ]
+      - zsh
+    - build-job:
+        tags:
+        - spack
+        - small
         variables:
-          CI_JOB_SIZE: "small"
-          SPACK_BUILD_JOBS: "1"
-          KUBERNETES_CPU_REQUEST: "500m"
-          KUBERNETES_MEMORY_REQUEST: "500M"
+          CI_JOB_SIZE: small
+          KUBERNETES_CPU_REQUEST: 4000m
+          KUBERNETES_MEMORY_REQUEST: 0.75G
+          SPACK_BUILD_JOBS: '4'
+      match:
+      - adept-utils
+      - alpgen
+      - ampt
+      - autoconf-archive
+      - clara
+      - cppgsl
+      - dbus
+      - dcap
+      - dri2proto
+      - dsfmt
+      - e4s-alc
+      - ed
+      - exmcutils
+      - fzf
+      - glproto
+      - gperf
+      - hepmc
+      - heppdt
+      - highfive
+      - hub
+      - inputproto
+      - jwt-cpp
+      - kbproto
+      - libatomic-ops
+      - libblastrampoline
+      - libelf
+      - libfontenc
+      - libnsl
+      - libraqm
+      - libsm
+      - libwhich
+      - libxau
+      - libxaw
+      - libxcomposite
+      - libxft
+      - libxi
+      - libxmu
+      - libxpm
+      - libxtst
+      - libzip
+      - neovim
+      - ocaml
+      - photos
+      - py-affine
+      - py-annotated-types
+      - py-antlr4-python3-runtime
+      - py-argcomplete
+      - py-asdf-standard
+      - py-black
+      - py-cerberus
+      - py-coloredlogs
+      - py-colorlog
+      - py-coverage
+      - py-docstring-parser
+      - py-dotmap
+      - py-frozendict
+      - py-future
+      - py-graphviz
+      - py-hepunits
+      - py-histbook
+      - py-histoprint
+      - py-huggingface-hub
+      - py-humanfriendly
+      - py-jacobi
+      - py-jmespath
+      - py-lightning-utilities
+      - py-merlin
+      - py-mplhep-data
+      - py-multipledispatch
+      - py-partd
+      - py-pynvim
+      - py-pyro-api
+      - py-pyrsistent
+      - py-pytest-cov
+      - py-pytokens
+      - py-setuptools-git-versioning
+      - py-tensorflow-datasets
+      - py-toolz
+      - py-transformers
+      - py-typeshed-client
+      - py-typing-inspection
+      - py-uproot
+      - py-vector
+      - py-xgboost
+      - py-xxhash
+      - py-zfit-interface
+      - py-zict
+      - pythia6
+      - qd
+      - randrproto
+      - roctracer-dev-api
+      - sio
+      - spiral-package-fftx
+      - which
+      - xbae
+      - xproto
+      - xxd-standalone
+      - zstr
+      - acl
+      - astyle
+      - bfs
+      - civetweb
+      - compositeproto
+      - covfie
+      - direnv
+      - dlpack
+      - docbook-xml
+      - docbook-xsl
+      - dpmjet
+      - environment-modules
+      - fcgi
+      - fribidi
+      - functionalplus
+      - giflib
+      - go-bootstrap
+      - grep
+      - gsettings-desktop-schemas
+      - half
+      - hiredis
+      - hpcviewer
+      - hsakmt-roct
+      - htop
+      - hztool
+      - intel-oneapi-dpl
+      - jemalloc
+      - jq
+      - json-cwx
+      - lhapdfsets
+      - libluv
+      - libmicrohttpd
+      - libproxy
+      - libtree
+      - libuv
+      - lmod
+      - lua-luafilesystem
+      - lua-luajit-openresty
+      - lzma
+      - mpc
+      - nano
+      - ncdu
+      - nettle
+      - oniguruma
+      - openjdk
+      - openjpeg
+      - parallelio
+      - popt
+      - postgresql
+      - py-aenum
+      - py-arpeggio
+      - py-async-timeout
+      - py-billiard
+      - py-cached-property
+      - py-cachetools
+      - py-caliper-reader
+      - py-celery
+      - py-click-didyoumean
+      - py-click-plugins
+      - py-click-repl
+      - py-colored
+      - py-configargparse
+      - py-docstring-to-markdown
+      - py-einops
+      - py-flake8
+      - py-fortran-language-server
+      - py-fprettify
+      - py-gosam
+      - py-isort
+      - py-jaraco-functools
+      - py-kombu
+      - py-librt
+      - py-locket
+      - py-maestrowf
+      - py-mccabe
+      - py-multiprocess
+      - py-mypy
+      - py-mypy-extensions
+      - py-numdifftools
+      - py-ordered-set
+      - py-promise
+      - py-pycodestyle
+      - py-pycubexr
+      - py-pydot
+      - py-pyflakes
+      - py-python-lsp-jsonrpc
+      - py-python-lsp-server
+      - py-pytz
+      - py-redis
+      - py-shroud
+      - py-textx
+      - py-types-psutil
+      - py-types-setuptools
+      - py-ujson
+      - py-vine
+      - py-xmltodict
+      - py-yq
+      - qgraf
+      - range-v3
+      - recordproto
+      - rhash
+      - rngstreams
+      - rpcsvc-proto
+      - rsync
+      - ruby-rake
+      - span-lite
+      - tmux
+      - tree-sitter
+      - unibilium
+      - universal-ctags
+      - unuran
+      - veccore
+      - vim
+      - xbitmaps
+      - xbraid
+      - xcb-util-cursor
+      - aida
+      - attr
+      - bats
+      - clingo-bootstrap-pgo
+      - frugally-deep
+      - gnuconfig
+      - lua-lpeg
+      - pandorapfa
+      - spiral-package-jit
+      - spiral-package-mpi
+      - spiral-package-simt
+      - tree
