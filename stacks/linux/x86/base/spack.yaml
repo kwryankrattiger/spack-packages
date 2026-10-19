@@ -48,7 +48,7 @@ spack:
 
   - python:
     - "python@3.13:" # General target version
-    - python@3.10.20 # compatibility version
+    - "python@3.10.20" # compatibility version
 
   - extra-compilers:
     - "llvm@16:"
@@ -93,7 +93,7 @@ spack:
     # Bootstrap the base compiler
   - group: bootstrap-gcc
     specs:
-    - gcc@13.4.0
+    - gcc@13
 
     # Bootstrap other language runtimes/compilers
     # python/rust/etc.
