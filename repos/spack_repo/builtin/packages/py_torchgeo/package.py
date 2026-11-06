@@ -8,7 +8,8 @@ from spack.package import *
 
 
 class PyTorchgeo(PythonPackage):
-    """TorchGeo: datasets, samplers, transforms, and pre-trained models for geospatial data."""
+    """TorchGeo: datasets, samplers, transforms, and pre-trained models for geospatial data.
+    """
 
     homepage = "https://github.com/torchgeo/torchgeo"
     pypi = "torchgeo/torchgeo-0.1.0.tar.gz"
